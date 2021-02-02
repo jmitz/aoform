@@ -73,7 +73,7 @@ function genereateElement(form, callback){
 				      var data = '{"'+form.name+'": ""}';
 				      AOFormData.push(JSON.parse(data));
 				      var elSelector = "[data-id='"+id+"']";
-				      var addScript = 'document.querySelector("'+elSelector+'").onkeydown =  function(){AOFormData['+increment+']["'+form.name+'"] = this.innerText;};';
+				      var addScript = 'document.querySelector("'+elSelector+'").onblur =  function(){AOFormData['+increment+']["'+form.name+'"] = this.innerText;};';
 				      TempListener.push(addScript);
 				      var inputContainer = document.createElement(ClassesAO.metaElement.class);
 				      inputContainer.setAttribute('class', ClassesAO.input.container.class);
@@ -90,7 +90,7 @@ function genereateElement(form, callback){
 					     var data = '{"'+form.name+'": ""}';
 					     AOFormData.push(JSON.parse(data));
 					     var elSelector = "[data-id='"+id+"']";
-					     var addScript = 'document.querySelector("'+elSelector+'").onkeydown =  function(){AOFormData['+increment+']["'+form.name+'"] = this.innerText;};';
+					     var addScript = 'document.querySelector("'+elSelector+'").onblur =  function(){AOFormData['+increment+']["'+form.name+'"] = this.innerText;};';
 					     TempListener.push(addScript);
 					     callback(tag);
 			break;
