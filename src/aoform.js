@@ -14,7 +14,7 @@ function AOForm(form,el){
 	generateForm(form, function(completeForm){
 		el.appendChild(completeForm);
 		loadEvents();
-		console.warn('Form is complete with '+completeForm.childNodes.length+' components. For more info visit https://https://github.com/spexnetworks/aoform');
+		console.warn(`Form is complete with ${completeForm.childNodes.length} components. For more info visit https://https://github.com/spexnetworks/aoform`);
 		increment = 0; //For create a new AOForm
 	});
 };
@@ -36,12 +36,12 @@ function validateForm(form){
 	}
 };
 //Function create all form
-function generateForm(form,callback){
+function generateForm(form, callback){
 	var container = document.createElement(ClassesAO.metaElement.class);
 	container.setAttribute('class',ClassesAO.container.class);
 	if(validateForm(form)){ //If is valid form contnue with append to element
 		for (var i = 0; i < form.length; i++) {
-			genereateElement(form[i], function(el){ //Call genereateElement() function
+			generateElement(form[i], function(el){ //Call generateElement() function
 				container.appendChild(el); //Append to element selected
 			});
 		}
@@ -50,7 +50,7 @@ function generateForm(form,callback){
 };
 
 //Function for create struct elements v.1.0 [input,textarea,radio,checkbox,select]
-function genereateElement(form, callback){
+function generateElement(form, callback){
 	//Create unique id for element
 	function guidGenerator() {
 	    var S4 = function() {
@@ -63,239 +63,299 @@ function genereateElement(form, callback){
 	var title = document.createElement(ClassesAO.metaElement.class);
 	var id = guidGenerator();
 	switch(form.type){
-		case 'input': tag.setAttribute('class',ClassesAO.input.text.class);
-				      tag.setAttribute('placeholder',form.label);
-				      tag.setAttribute('name',form.name);
-				      tag.setAttribute('value',form.values);
-				      tag.setAttribute('contenteditable','true');
-				      tag.setAttribute('spellcheck','false');
-				      tag.setAttribute('data-id', id);
-				      var data = '{"'+form.name+'": ""}';
-				      AOFormData.push(JSON.parse(data));
-				      var elSelector = "[data-id='"+id+"']";
-				      var addScript = 'document.querySelector("'+elSelector+'").onblur =  function(){AOFormData['+increment+']["'+form.name+'"] = this.innerText;};';
-				      TempListener.push(addScript);
-				      var inputContainer = document.createElement(ClassesAO.metaElement.class);
-				      inputContainer.setAttribute('class', ClassesAO.input.container.class);
-				      inputContainer.appendChild(tag);
-				      callback(inputContainer);
+		case 'input': 
+			tag.setAttribute('class',ClassesAO.input.text.class);
+			tag.setAttribute('placeholder',form.label);
+			tag.setAttribute('name',form.name);
+			tag.setAttribute('value',form.values);
+			tag.setAttribute('contenteditable','true');
+			tag.setAttribute('spellcheck','false');
+			tag.setAttribute('data-id', id);
+			var data = '{"'+form.name+'": ""}';
+			AOFormData.push(JSON.parse(data));
+			var elSelector = "[data-id='"+id+"']";
+			var addScript = `
+				document.querySelector("${elSelector}").onblur =  function(){
+					AOFormData[${increment}]["${form.name}"] = this.innerText;
+				};`;
+			TempListener.push(addScript);
+			var inputContainer = document.createElement(ClassesAO.metaElement.class);
+			inputContainer.setAttribute('class', ClassesAO.input.container.class);
+			inputContainer.appendChild(tag);
+			callback(inputContainer);
 			break;
-		case 'textarea': tag.setAttribute('class',ClassesAO.textarea.class);
-					     tag.setAttribute('placeholder',form.label);
-					     tag.setAttribute('name',form.name);
-					     tag.setAttribute('value',form.values);
-					     tag.setAttribute('contenteditable','true');
-					     tag.setAttribute('spellcheck','false');
-					     tag.setAttribute('data-id', id);
-					     var data = '{"'+form.name+'": ""}';
-					     AOFormData.push(JSON.parse(data));
-					     var elSelector = "[data-id='"+id+"']";
-					     var addScript = 'document.querySelector("'+elSelector+'").onblur =  function(){AOFormData['+increment+']["'+form.name+'"] = this.innerText;};';
-					     TempListener.push(addScript);
-					     callback(tag);
+		case 'textarea': 
+			tag.setAttribute('class',ClassesAO.textarea.text.class);
+			tag.setAttribute('placeholder',form.label);
+			tag.setAttribute('name',form.name);
+			tag.setAttribute('value',form.values);
+			tag.setAttribute('contenteditable','true');
+			tag.setAttribute('spellcheck','false');
+			tag.setAttribute('data-id', id);
+			var data = '{"'+form.name+'": ""}';
+			AOFormData.push(JSON.parse(data));
+			var elSelector = "[data-id='"+id+"']";
+			var addScript = `
+				document.querySelector("${elSelector}").onblur =  function(){
+					AOFormData[${increment}]["${form.name}"] = this.innerText;
+				};`;
+			TempListener.push(addScript);
+			var inputContainer = document.createElement(ClassesAO.metaElement.class);
+			inputContainer.setAttribute('class', ClassesAO.textarea.container.class);
+			inputContainer.appendChild(tag);
+			callback(inputContainer);
 			break;
-		case 'select': tag.setAttribute('class',ClassesAO.select.container.class);
-					   tag.setAttribute('name',form.name);
-					   var selectext = document.createElement(ClassesAO.metaElement.class);
-					   selectext.setAttribute('class', ClassesAO.select.text.class);
-					   selectext.setAttribute('placeholder', form.label);
-					   selectext.setAttribute('data-id', id);
-					   var elSelector = "[data-id='"+id+"']";
-					   var addScript = 'document.querySelector("'+elSelector+'").onclick =  function(){if(this.nextSibling.classList.contains(ClassesAO.activeClass)){this.nextSibling.classList.remove(ClassesAO.activeClass);}else{this.nextSibling.classList.add(ClassesAO.activeClass);}};';
-					   TempListener.push(addScript);
-					   var optionContainer = document.createElement(ClassesAO.metaElement.class);
-					   optionContainer.setAttribute('class', ClassesAO.select.options.container.class);
-					   var options = form.values;
-					   for (var i = 0; i < options.length; i++){
-					   		var idOption = guidGenerator();
-					   		var optionElement = document.createElement(ClassesAO.metaElement.class);
-					   		optionElement.setAttribute('class',ClassesAO.select.options.option.class);
-					   		optionElement.innerText = options[i].label;
-					   		optionElement.setAttribute('value',options[i].value);
-					   		optionElement.setAttribute('data-id',idOption);
-					   		var elSelectorOption = "[data-id='"+idOption+"']";
-					   		var addScript = 'document.querySelector("'+elSelectorOption+'").onclick =  function(){var value = this.getAttribute("value"); var text = this.innerText; AOFormData['+increment+']["'+form.name+'"] = value;document.querySelector("'+elSelector+'").click(); document.querySelector("'+elSelector+'").setAttribute("placeholder",text); document.querySelector("'+elSelector+'").classList.add(ClassesAO.select.text.notEmpty)};';
-					   		TempListener.push(addScript);
-					   		optionContainer.appendChild(optionElement);
-					   }
-					   tag.appendChild(selectext);
-					   tag.appendChild(optionContainer);
-					   var data = '{"'+form.name+'": ""}';
-					   AOFormData.push(JSON.parse(data));
-					   callback(tag);
+		case 'select':
+			tag.setAttribute('class',ClassesAO.select.container.class);
+			tag.setAttribute('name',form.name);
+			var selectext = document.createElement(ClassesAO.metaElement.class);
+			selectext.setAttribute('class', ClassesAO.select.text.class);
+			selectext.setAttribute('placeholder', form.label);
+			selectext.setAttribute('data-id', id);
+			var elSelector = "[data-id='"+id+"']";
+			var addScript = `
+				document.querySelector("${elSelector}").onclick =  function(){
+					if(this.nextSibling.classList.contains(ClassesAO.activeClass)){
+						this.nextSibling.classList.remove(ClassesAO.activeClass);
+					}
+					else{this.nextSibling.classList.add(ClassesAO.activeClass);}
+				};`;
+			TempListener.push(addScript);
+			var optionContainer = document.createElement(ClassesAO.metaElement.class);
+			optionContainer.setAttribute('class', ClassesAO.select.options.container.class);
+			var options = form.values;
+			for (var i = 0; i < options.length; i++){
+				var idOption = guidGenerator();
+				var optionElement = document.createElement(ClassesAO.metaElement.class);
+				optionElement.setAttribute('class',ClassesAO.select.options.option.class);
+				optionElement.innerText = options[i].label;
+				optionElement.setAttribute('value',options[i].value);
+				optionElement.setAttribute('data-id',idOption);
+				var elSelectorOption = "[data-id='"+idOption+"']";
+				var addScript = `
+					document.querySelector("${elSelectorOption}").onclick =  function(){
+						var value = this.getAttribute("value");
+						var text = this.innerText;
+						AOFormData[${increment}]["${form.name}"] = value;
+						document.querySelector("${elSelector}").click();
+						document.querySelector("${elSelector}").setAttribute("placeholder",text);
+						document.querySelector("${elSelector}").classList.add(ClassesAO.select.text.notEmpty)
+					};`;
+				TempListener.push(addScript);
+				optionContainer.appendChild(optionElement);
+			}
+			tag.appendChild(selectext);
+			tag.appendChild(optionContainer);
+			var data = '{"'+form.name+'": ""}';
+			AOFormData.push(JSON.parse(data));
+			callback(tag);
 			break;
-		case 'radio': tag.setAttribute('class',ClassesAO.radio.container.class);
-					  tag.setAttribute('name',form.name);
-					  title.setAttribute('class', ClassesAO.title.class);
-					  title.innerText = form.label;
-					  tag.appendChild(title);
-					  var options = form.values;
-					  for (var i = 0; i < options.length; i++){
-					  		var idOption = guidGenerator();
-					  		var optionElement = document.createElement(ClassesAO.metaElement.class);
-					  		optionElement.setAttribute('class',ClassesAO.radio.option.class);
-					  		optionElement.setAttribute('placeholder',options[i].label);
-					  		optionElement.setAttribute('value',options[i].value);
-					  		optionElement.setAttribute('data-id',idOption);
-					  		var elSelector = "[data-id='"+idOption+"']";
-					  		var addScript = 'document.querySelector("'+elSelector+'").onclick =  function(){for (var i = 0; i < document.querySelectorAll(".'+ClassesAO.radio.option.class+'").length; i++) {document.querySelectorAll(".'+ClassesAO.radio.option.class+'")[i].classList.remove(ClassesAO.activeClass);}this.classList.add(ClassesAO.activeClass);AOFormData['+increment+']["'+form.name+'"] = this.getAttribute("value");};';
-					  		TempListener.push(addScript);
-					  		tag.appendChild(optionElement);
-					  }
-					  var data = '{"'+form.name+'": ""}';
-					  AOFormData.push(JSON.parse(data));
-					  callback(tag);
+		case 'radio':
+			tag.setAttribute('class',ClassesAO.radio.container.class);
+			tag.setAttribute('name',form.name);
+			title.setAttribute('class', ClassesAO.title.class);
+			title.innerText = form.label;
+			tag.appendChild(title);
+			var options = form.values;
+			for (var i = 0; i < options.length; i++){
+				var idOption = guidGenerator();
+				var optionElement = document.createElement(ClassesAO.metaElement.class);
+				optionElement.setAttribute('class',ClassesAO.radio.option.class);
+				optionElement.setAttribute('placeholder',options[i].label);
+				optionElement.setAttribute('value',options[i].value);
+				optionElement.setAttribute('data-id',idOption);
+				var elSelector = "[data-id='"+idOption+"']";
+				// var addScript = 'document.querySelector("'+elSelector+'").onclick =  function(){for (var i = 0; i < document.querySelectorAll(".'+ClassesAO.radio.option.class+'").length; i++) {document.querySelectorAll(".'+ClassesAO.radio.option.class+'")[i].classList.remove(ClassesAO.activeClass);}this.classList.add(ClassesAO.activeClass);AOFormData['+increment+']["'+form.name+'"] = this.getAttribute("value");};';
+				var addScript = `
+					document.querySelector("${elSelector}").onclick =  function(){
+					    let parentName = "${form.name}";
+					 	let radioNodes = document.querySelectorAll(".${ClassesAO.radio.option.class}");
+						for (var i = 0; i < radioNodes.length; i++) {
+							if (radioNodes[i].parentElement.getAttribute("name") === parentName){
+								radioNodes[i].classList.remove(ClassesAO.activeClass);
+							}
+						}
+						this.classList.add(ClassesAO.activeClass);
+						AOFormData[${increment}]["${form.name}"] = this.getAttribute("value");
+					};`;
+				TempListener.push(addScript);
+				tag.appendChild(optionElement);
+			}
+			var data = '{"'+form.name+'": ""}';
+			AOFormData.push(JSON.parse(data));
+			callback(tag);
 			break;
-		case 'checkbox': tag.setAttribute('class',ClassesAO.checkbox.container.class);
-					  tag.setAttribute('name',form.name);
-					  tag.setAttribute('data-id', id);
-					  title.setAttribute('class', ClassesAO.title.class);
-					  title.innerText = form.label;
-					  tag.appendChild(title);
-					  var options = form.values;
-					  for (var i = 0; i < options.length; i++){
-					  		var idOption = guidGenerator();
-					  		var optionElement = document.createElement(ClassesAO.metaElement.class);
-					  		optionElement.setAttribute('class',ClassesAO.checkbox.option.class);
-					  		optionElement.setAttribute('placeholder',options[i].label);
-					  		optionElement.setAttribute('value',options[i].value);
-					  		optionElement.setAttribute('data-id',idOption);
-					  		var elSelector = "[data-id='"+idOption+"']";
-					  		var addScript = 'document.querySelector("'+elSelector+'").onclick =  function(){var value = this.getAttribute("value");if(this.classList.contains(ClassesAO.activeClass)){AOFormData['+increment+']["'+form.name+'"].pop(value);this.classList.remove(ClassesAO.activeClass);}else{AOFormData['+increment+']["'+form.name+'"].push(value);this.classList.add(ClassesAO.activeClass);}};';
-					  		TempListener.push(addScript);
-					  		tag.appendChild(optionElement);
-					  }
-					  var data = '{"'+form.name+'": []}';
-					  AOFormData.push(JSON.parse(data));
-					  callback(tag);
+		case 'checkbox':
+			tag.setAttribute('class',ClassesAO.checkbox.container.class);
+			tag.setAttribute('name',form.name);
+			tag.setAttribute('data-id', id);
+			title.setAttribute('class', ClassesAO.title.class);
+			title.innerText = form.label;
+			tag.appendChild(title);
+			var options = form.values;
+			for (var i = 0; i < options.length; i++){
+				var idOption = guidGenerator();
+				var optionElement = document.createElement(ClassesAO.metaElement.class);
+				optionElement.setAttribute('class',ClassesAO.checkbox.option.class);
+				optionElement.setAttribute('placeholder',options[i].label);
+				optionElement.setAttribute('value',options[i].value);
+				optionElement.setAttribute('data-id',idOption);
+				var elSelector = "[data-id='"+idOption+"']";
+				var addScript = `
+					document.querySelector("${elSelector}").onclick =  function(){
+						var value = this.getAttribute("value");
+						if(this.classList.contains(ClassesAO.activeClass)){
+							AOFormData[${increment}]["${form.name}"].pop(value);
+							this.classList.remove(ClassesAO.activeClass);
+						}
+						else{
+							AOFormData[${increment}]["${form.name}"].push(value);
+							this.classList.add(ClassesAO.activeClass);
+						}
+					};`;
+				TempListener.push(addScript);
+				tag.appendChild(optionElement);
+			}
+			var data = '{"'+form.name+'": []}';
+			AOFormData.push(JSON.parse(data));
+			callback(tag);
 			break;
-		case 'multiselect': tag.setAttribute('class',ClassesAO.multiselect.container.class);
-						   tag.setAttribute('name',form.name);
-						   var selectext = document.createElement(ClassesAO.metaElement.class);
-						   selectext.setAttribute('class', ClassesAO.multiselect.text.container.class);
-						   selectext.setAttribute('data-id', id);
-						   var elSelector = "[data-id='"+id+"']";
-						   var addScript = 'document.querySelector("'+elSelector+'").onclick =  function(e){e.stopPropagation(); if(this.nextSibling.classList.contains(ClassesAO.activeClass)){this.nextSibling.classList.remove(ClassesAO.activeClass);}else{this.nextSibling.classList.add(ClassesAO.activeClass);}};';
-						   TempListener.push(addScript);
-						   var textContainerOptions = document.createElement(ClassesAO.metaElement.class);
-						   textContainerOptions.setAttribute("class", ClassesAO.multiselect.text.options.container.class);
-						   textContainerOptions.setAttribute('placeholder', form.label);
-						   var idContainerOptionSelected = guidGenerator();
-						   textContainerOptions.setAttribute("data-id", idContainerOptionSelected); 
-						   selectext.appendChild(textContainerOptions);
-						   var optionContainer = document.createElement(ClassesAO.metaElement.class);
-						   optionContainer.setAttribute('class', ClassesAO.multiselect.options.container.class);
-						   var options = form.values;
-						   for (var i = 0; i < options.length; i++){
-						   		var idOption = guidGenerator();
-						   		var optionElement = document.createElement(ClassesAO.metaElement.class);
-						   		optionElement.setAttribute('class',ClassesAO.multiselect.options.option.class);
-						   		optionElement.innerText = options[i].label;
-						   		optionElement.setAttribute('value',options[i].value);
-						   		optionElement.setAttribute('data-id',idOption);
-						   		var elSelectorOption = "[data-id='"+idOption+"']";
-						   		var addScript = `
-									document.querySelector("`+elSelectorOption+`").onclick = function(e) {
-										e.stopPropagation();
-										if (!this.classList.contains(ClassesAO.activeClass)) { 
-											this.classList.add(ClassesAO.activeClass);
-											var newOption = document.createElement(ClassesAO.metaElement.class);
-									        newOption.setAttribute("class", ClassesAO.multiselect.text.options.option.class);
-									        newOption.setAttribute("data-id-option", "`+idOption+`");
-									        newOption.innerText = this.innerText;
-									        addListenerOptionsMultiSelect();
-									        document.querySelector('[data-id="`+idContainerOptionSelected+`"]').appendChild(newOption);
-									        AOFormData[`+increment+`]["`+form.name+`"].push(this.getAttribute("value")); 
-									    } else {
-									    	this.classList.remove(ClassesAO.activeClass);
-									    	var id_option = '[data-id-option="'+this.getAttribute('data-id')+'"]';
-									    	function listenerOption(selector){
-												var selectOption = document.querySelector(id_option);
-											    selectOption.remove();
-									    	};
-									    	listenerOption();
-									    	AOFormData[`+increment+`]["`+form.name+`"].pop(this.getAttribute("value"));
-									    }
-									  	document.querySelector("`+elSelector+`").click(); 
-									};
-						   		`;
-						   		TempListener.push(addScript);
-						   		optionContainer.appendChild(optionElement);
-						   }
-						   tag.appendChild(selectext);
-						   tag.appendChild(optionContainer);
-						   var data = '{"'+form.name+'": []}';
-						   AOFormData.push(JSON.parse(data));
-						   callback(tag);
+		case 'multiselect':
+			tag.setAttribute('class',ClassesAO.multiselect.container.class);
+			tag.setAttribute('name',form.name);
+			var selectext = document.createElement(ClassesAO.metaElement.class);
+			selectext.setAttribute('class', ClassesAO.multiselect.text.container.class);
+			selectext.setAttribute('data-id', id);
+			var elSelector = "[data-id='"+id+"']";
+			var addScript = `
+				document.querySelector("${elSelector}").onclick = function(e){
+					e.stopPropagation();
+					if(this.nextSibling.classList.contains(ClassesAO.activeClass)){
+						this.nextSibling.classList.remove(ClassesAO.activeClass);
+					}
+					else{
+						this.nextSibling.classList.add(ClassesAO.activeClass);
+					}
+				};`;
+			TempListener.push(addScript);
+			var textContainerOptions = document.createElement(ClassesAO.metaElement.class);
+			textContainerOptions.setAttribute("class", ClassesAO.multiselect.text.options.container.class);
+			textContainerOptions.setAttribute('placeholder', form.label);
+			var idContainerOptionSelected = guidGenerator();
+			textContainerOptions.setAttribute("data-id", idContainerOptionSelected); 
+			selectext.appendChild(textContainerOptions);
+			var optionContainer = document.createElement(ClassesAO.metaElement.class);
+			optionContainer.setAttribute('class', ClassesAO.multiselect.options.container.class);
+			var options = form.values;
+			for (var i = 0; i < options.length; i++){
+				var idOption = guidGenerator();
+				var optionElement = document.createElement(ClassesAO.metaElement.class);
+				optionElement.setAttribute('class',ClassesAO.multiselect.options.option.class);
+				optionElement.innerText = options[i].label;
+				optionElement.setAttribute('value',options[i].value);
+				optionElement.setAttribute('data-id',idOption);
+				var elSelectorOption = "[data-id='"+idOption+"']";
+				var addScript = `
+					document.querySelector("`+elSelectorOption+`").onclick = function(e) {
+						e.stopPropagation();
+						if (!this.classList.contains(ClassesAO.activeClass)) { 
+							this.classList.add(ClassesAO.activeClass);
+							var newOption = document.createElement(ClassesAO.metaElement.class);
+					        newOption.setAttribute("class", ClassesAO.multiselect.text.options.option.class);
+					        newOption.setAttribute("data-id-option", "`+idOption+`");
+					        newOption.innerText = this.innerText;
+					        addListenerOptionsMultiSelect();
+					        document.querySelector('[data-id="`+idContainerOptionSelected+`"]').appendChild(newOption);
+					        AOFormData[`+increment+`]["`+form.name+`"].push(this.getAttribute("value")); 
+					    } else {
+					    	this.classList.remove(ClassesAO.activeClass);
+					    	var id_option = '[data-id-option="'+this.getAttribute('data-id')+'"]';
+					    	function listenerOption(selector){
+								var selectOption = document.querySelector(id_option);
+							    selectOption.remove();
+					    	};
+					    	listenerOption();
+					    	AOFormData[`+increment+`]["`+form.name+`"].pop(this.getAttribute("value"));
+					    }
+					  	document.querySelector("`+elSelector+`").click(); 
+					};`;
+				TempListener.push(addScript);
+				optionContainer.appendChild(optionElement);
+			}
+			tag.appendChild(selectext);
+			tag.appendChild(optionContainer);
+			var data = '{"'+form.name+'": []}';
+			AOFormData.push(JSON.parse(data));
+			callback(tag);
 			break;
-		case 'searchselect': tag.setAttribute('class',ClassesAO.searchselect.container.class);
-						   tag.setAttribute('name',form.name);
-						   var selectext = document.createElement(ClassesAO.metaElement.class);
-						   selectext.setAttribute('class', ClassesAO.searchselect.text.container.class);
-						   selectext.setAttribute('data-id', id);
-						   var elSelector = "[data-id='"+id+"']";
-						   var addScript = 'document.querySelector("'+elSelector+'").onclick =  function(e){e.stopPropagation(); if(this.nextSibling.classList.contains(ClassesAO.activeClass)){this.nextSibling.classList.remove(ClassesAO.activeClass);}else{this.nextSibling.classList.add(ClassesAO.activeClass);}};';
-						   TempListener.push(addScript);
-						   var textContainerOptions = document.createElement(ClassesAO.metaElement.class);
-						   textContainerOptions.setAttribute("class", ClassesAO.searchselect.text.options.container.class);
-						   textContainerOptions.setAttribute('placeholder', form.label);
-						   var idContainerOptionSelected = guidGenerator();
-						   textContainerOptions.setAttribute("data-id", idContainerOptionSelected); 
-						   selectext.appendChild(textContainerOptions);
-						   var optionContainer = document.createElement(ClassesAO.metaElement.class);
-						   optionContainer.setAttribute('class', ClassesAO.searchselect.options.container.class);
-						   var options = form.values;
-						   var searchContainer = document.createElement(ClassesAO.metaElement.class);
-						   searchContainer.setAttribute('class', ClassesAO.searchselect.options.search.container.class);
-						   var searchTextarea = document.createElement(ClassesAO.metaElement.class);
-						   searchTextarea.setAttribute('class', ClassesAO.searchselect.options.search.textarea.class);
-						   searchTextarea.setAttribute('placeholder', ClassesAO.searchselect.options.search.textarea.placeholder);
-						   searchTextarea.setAttribute('contenteditable', '');
-						   var idsearchTextArea = guidGenerator();
-						   searchTextarea.setAttribute('id-option', idsearchTextArea);
-						   searchContainer.appendChild(searchTextarea);
-						   optionContainer.appendChild(searchContainer);
-						   for (var i = 0; i < options.length; i++){
-						   		var idOption = guidGenerator();
-						   		var optionElement = document.createElement(ClassesAO.metaElement.class);
-						   		optionElement.setAttribute('class',ClassesAO.searchselect.options.option.class);
-						   		optionElement.innerText = options[i].label;
-						   		optionElement.setAttribute('value',options[i].value);
-						   		optionElement.setAttribute('data-id',idOption);
-						   		var elSelectorOption = "[data-id='"+idOption+"']";
-						   		var addScript = `
-									document.querySelector("`+elSelectorOption+`").onclick = function(e) {
-										e.stopPropagation();
-										if (!this.classList.contains(ClassesAO.activeClass)) { 
-											this.classList.add(ClassesAO.activeClass);
-											var newOption = document.createElement(ClassesAO.metaElement.class);
-									        newOption.setAttribute("class", ClassesAO.searchselect.text.options.option.class);
-									        newOption.setAttribute("data-id-option", "`+idOption+`");
-									        newOption.innerText = this.innerText;
-									        addListenerOptionsMultiSelect();
-									        document.querySelector('[data-id="`+idContainerOptionSelected+`"]').appendChild(newOption);
-									        AOFormData[`+increment+`]["`+form.name+`"].push(this.getAttribute("value")); 
-									    } else {
-									    	this.classList.remove(ClassesAO.activeClass);
-									    	var id_option = '[data-id-option="'+this.getAttribute('data-id')+'"]';
-									    	function listenerOption(selector){
-												var selectOption = document.querySelector(id_option);
-											    selectOption.remove();
-									    	};
-									    	listenerOption();
-									    	AOFormData[`+increment+`]["`+form.name+`"].pop(this.getAttribute("value"));
-									    }
-									  	document.querySelector("`+elSelector+`").click(); 
-									};
-						   		`;
-						   		TempListener.push(addScript);
-						   		optionContainer.appendChild(optionElement);
-						   }
-						   tag.appendChild(selectext);
-						   tag.appendChild(optionContainer);
-						   var data = '{"'+form.name+'": []}';
-						   AOFormData.push(JSON.parse(data));
-						   callback(tag);
+		case 'searchselect':
+			tag.setAttribute('class',ClassesAO.searchselect.container.class);
+			tag.setAttribute('name',form.name);
+			var selectext = document.createElement(ClassesAO.metaElement.class);
+			selectext.setAttribute('class', ClassesAO.searchselect.text.container.class);
+			selectext.setAttribute('data-id', id);
+			var elSelector = "[data-id='"+id+"']";
+			var addScript = 'document.querySelector("'+elSelector+'").onclick =  function(e){e.stopPropagation(); if(this.nextSibling.classList.contains(ClassesAO.activeClass)){this.nextSibling.classList.remove(ClassesAO.activeClass);}else{this.nextSibling.classList.add(ClassesAO.activeClass);}};';
+			TempListener.push(addScript);
+			var textContainerOptions = document.createElement(ClassesAO.metaElement.class);
+			textContainerOptions.setAttribute("class", ClassesAO.searchselect.text.options.container.class);
+			textContainerOptions.setAttribute('placeholder', form.label);
+			var idContainerOptionSelected = guidGenerator();
+			textContainerOptions.setAttribute("data-id", idContainerOptionSelected); 
+			selectext.appendChild(textContainerOptions);
+			var optionContainer = document.createElement(ClassesAO.metaElement.class);
+			optionContainer.setAttribute('class', ClassesAO.searchselect.options.container.class);
+			var options = form.values;
+			var searchContainer = document.createElement(ClassesAO.metaElement.class);
+			searchContainer.setAttribute('class', ClassesAO.searchselect.options.search.container.class);
+			var searchTextarea = document.createElement(ClassesAO.metaElement.class);
+			searchTextarea.setAttribute('class', ClassesAO.searchselect.options.search.textarea.class);
+			searchTextarea.setAttribute('placeholder', ClassesAO.searchselect.options.search.textarea.placeholder);
+			searchTextarea.setAttribute('contenteditable', '');
+			var idsearchTextArea = guidGenerator();
+			searchTextarea.setAttribute('id-option', idsearchTextArea);
+			searchContainer.appendChild(searchTextarea);
+			optionContainer.appendChild(searchContainer);
+			for (var i = 0; i < options.length; i++){
+				var idOption = guidGenerator();
+				var optionElement = document.createElement(ClassesAO.metaElement.class);
+				optionElement.setAttribute('class',ClassesAO.searchselect.options.option.class);
+				optionElement.innerText = options[i].label;
+				optionElement.setAttribute('value',options[i].value);
+				optionElement.setAttribute('data-id',idOption);
+				var elSelectorOption = "[data-id='"+idOption+"']";
+				var addScript = `
+				document.querySelector("`+elSelectorOption+`").onclick = function(e) {
+					e.stopPropagation();
+					if (!this.classList.contains(ClassesAO.activeClass)) { 
+						this.classList.add(ClassesAO.activeClass);
+						var newOption = document.createElement(ClassesAO.metaElement.class);
+				        newOption.setAttribute("class", ClassesAO.searchselect.text.options.option.class);
+				        newOption.setAttribute("data-id-option", "`+idOption+`");
+				        newOption.innerText = this.innerText;
+				        addListenerOptionsMultiSelect();
+				        document.querySelector('[data-id="`+idContainerOptionSelected+`"]').appendChild(newOption);
+				        AOFormData[`+increment+`]["`+form.name+`"].push(this.getAttribute("value")); 
+				    } else {
+				    	this.classList.remove(ClassesAO.activeClass);
+				    	var id_option = '[data-id-option="'+this.getAttribute('data-id')+'"]';
+				    	function listenerOption(selector){
+							var selectOption = document.querySelector(id_option);
+						    selectOption.remove();
+				    	};
+				    	listenerOption();
+				    	AOFormData[`+increment+`]["`+form.name+`"].pop(this.getAttribute("value"));
+				    }
+				  	document.querySelector("`+elSelector+`").click(); 
+				};`;
+				TempListener.push(addScript);
+				optionContainer.appendChild(optionElement);
+			}
+			tag.appendChild(selectext);
+			tag.appendChild(optionContainer);
+			var data = '{"'+form.name+'": []}';
+			AOFormData.push(JSON.parse(data));
+			callback(tag);
 			break;
 	}
 	increment++;
@@ -330,7 +390,12 @@ const ClassesAO = {
 		}
 	},
 	textarea: {
-		class: 'aoform-textarea'
+		container: {
+			class: 'aoform-textarea-container'
+		},
+		text: {
+			class: 'aoform-textarea'
+		}
 	},
 	select: {
 		container: {
