@@ -10,6 +10,16 @@ var increment = 0;
 
 //User function interact
 function AOForm(form,el){
+
+	// Remove data from AOFormData and TempListner
+	// Required if form is called multiple times in a session
+	if (AOFormData.length > 0){
+		AOFormData = [];
+		while (TempListener.length > 0){
+			TempListener.pop();
+		}
+	}
+	
 	this.data = AOFormData;
 	generateForm(form, function(completeForm){
 		el.appendChild(completeForm);
