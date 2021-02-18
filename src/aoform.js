@@ -5,11 +5,188 @@
 
 "use strict";
 
-//Position element to create
-var increment = 0;
+Class AOForm {
+	
+	
+	constructor(form, el){
+		this.form = form;
+		this.el = el;
+		this.increment = 0;
+		this.data = [];
+		this.tempListener = [];
+		this.classesAO = {
+			metaElement: {
+				class: 'aoform'
+			},
+			container: {
+				class: 'aoform-container'
+			},
+			input: {
+				container: {
+					class: 'aoform-input-container'
+				},
+				text: {
+					class: 'aoform-input'
+				}
+			},
+			textarea: {
+				container: {
+					class: 'aoform-textarea-container'
+				},
+				text: {
+					class: 'aoform-textarea'
+				}
+			},
+			select: {
+				container: {
+					class: 'aoform-select-container'
+				},
+				text: {
+					class: 'aoform-text-select',
+					notEmpty: 'aoform-selected'
+				},
+				options: {
+					container: {
+						class: 'aoform-option-select'
+					},
+					option: {
+						class: 'aoform-option'
+					}
+				}
+			},
+			radio: {
+				container: {
+					class: 'aoform-radio-container'
+				},
+				option: {
+					class: 'aoform-radio'
+				}
+			},
+			checkbox: {
+				container: {
+					class: 'aoform-checkbox-container'
+				},
+				option: {
+					class: 'aoform-checkbox'
+				}
+			},
+			multiselect: {
+				container: {
+					class: 'aoform-multiple-select'
+				},
+				text: {
+					container: {
+						class: 'aoform-text-select aoform-options-selected'
+					},
+					options: {
+						container: {
+							class: 'aoform-multiple-selected-option'
+						},
+						option: {
+							class: 'aoform-select-option'
+						}
+					}
+				},
+				options: {
+					container: {
+						class: 'aoform-option-select'
+					},
+					option: {
+						class: 'aoform-option'
+					}
+				}
+			},
+			searchselect: {
+				container: {
+					class: 'aoform-multiple-select'
+				},
+				text: {
+					container: {
+						class: 'aoform-text-select aoform-options-selected'
+					},
+					options: {
+						container: {
+							class: 'aoform-multiple-selected-option'
+						},
+						option: {
+							class: 'aoform-select-option'
+						}
+					}
+				},
+				options: {
+					container: {
+						class: 'aoform-option-select'
+					},
+					option: {
+						class: 'aoform-option'
+					},
+					search:{
+						container: {
+							class: 'aoform-container-search'
+						},
+						textarea: {
+							class: 'aoform-text-search',
+							placeholder: 'Type for search...'
+						}
+					}
+				}
+			},
+			title:{
+				class: 'aoform-title'
+			},
+			subtitle:{
+				class: 'aoform-subtitle'
+			},
+			activeClass: 'aoform-active',
+		};
+		this.generateForm(this.form, function(completeForm){
+			this.el.appendChild(completeForm);
+			this.loadEvents();
+			console.warn(`Form is complete with ${completeForm.childNodes.length} components. For more info visit https://https://github.com/spexnetworks/aoform`);
+		});
+	}
+
+
+	generateForm(form, callback){
+		var container = document.createElement(ClassesAO.metaElement.class);
+		container.setAttribute('class',ClassesAO.container.class);
+		if(this.validateForm(form)){ //If is valid form contnue with append to element
+			for (var i = 0; i < form.length; i++) {
+				this.generateElement(form[i], function(el){ //Call generateElement() function
+					container.appendChild(el); //Append to element selected
+				});
+			}
+			callback(container); //Callback function
+		}	
+	}
+
+	loadEvents(){
+
+	}
+
+	validateForm(form){
+		console.log("ValidateForm");
+		if(!form){
+			return false; //Not valid, form is null
+		}
+		else{
+			try{
+				var check = form[0].type; //Check if form have correct JSON format
+				return true;
+			}
+			catch(e){
+				console.error('Unexpected Error: JSON Format error. Please check, and try again. Documentation: https://https://github.com/spexnetworks/aoform'); //Error formating JSON
+				return false;
+			}
+		}
+	
+	}
+}
+
+
 
 //User function interact
-function AOForm(form,el){
+function AOFormOld(form,el){
 
 	// Remove data from AOFormData and TempListner
 	// Required if form is called multiple times in a session
@@ -19,7 +196,7 @@ function AOForm(form,el){
 			TempListener.pop();
 		}
 	}
-	
+
 	this.data = AOFormData;
 	generateForm(form, function(completeForm){
 		el.appendChild(completeForm);
@@ -384,131 +561,7 @@ function loadEvents(){
 var AOFormData = [];
 
 //Classes CSS of form
-const ClassesAO = {
-	metaElement: {
-		class: 'aoform'
-	},
-	container: {
-		class: 'aoform-container'
-	},
-	input: {
-		container: {
-			class: 'aoform-input-container'
-		},
-		text: {
-			class: 'aoform-input'
-		}
-	},
-	textarea: {
-		container: {
-			class: 'aoform-textarea-container'
-		},
-		text: {
-			class: 'aoform-textarea'
-		}
-	},
-	select: {
-		container: {
-			class: 'aoform-select-container'
-		},
-		text: {
-			class: 'aoform-text-select',
-			notEmpty: 'aoform-selected'
-		},
-		options: {
-			container: {
-				class: 'aoform-option-select'
-			},
-			option: {
-				class: 'aoform-option'
-			}
-		}
-	},
-	radio: {
-		container: {
-			class: 'aoform-radio-container'
-		},
-		option: {
-			class: 'aoform-radio'
-		}
-	},
-	checkbox: {
-		container: {
-			class: 'aoform-checkbox-container'
-		},
-		option: {
-			class: 'aoform-checkbox'
-		}
-	},
-	multiselect: {
-		container: {
-			class: 'aoform-multiple-select'
-		},
-		text: {
-			container: {
-				class: 'aoform-text-select aoform-options-selected'
-			},
-			options: {
-				container: {
-					class: 'aoform-multiple-selected-option'
-				},
-				option: {
-					class: 'aoform-select-option'
-				}
-			}
-		},
-		options: {
-			container: {
-				class: 'aoform-option-select'
-			},
-			option: {
-				class: 'aoform-option'
-			}
-		}
-	},
-	searchselect: {
-		container: {
-			class: 'aoform-multiple-select'
-		},
-		text: {
-			container: {
-				class: 'aoform-text-select aoform-options-selected'
-			},
-			options: {
-				container: {
-					class: 'aoform-multiple-selected-option'
-				},
-				option: {
-					class: 'aoform-select-option'
-				}
-			}
-		},
-		options: {
-			container: {
-				class: 'aoform-option-select'
-			},
-			option: {
-				class: 'aoform-option'
-			},
-			search:{
-				container: {
-					class: 'aoform-container-search'
-				},
-				textarea: {
-					class: 'aoform-text-search',
-					placeholder: 'Type for search...'
-				}
-			}
-		}
-	},
-	title:{
-		class: 'aoform-title'
-	},
-	subtitle:{
-		class: 'aoform-subtitle'
-	},
-	activeClass: 'aoform-active',
-};
+const ;
 
 const TempListener = [];
 
